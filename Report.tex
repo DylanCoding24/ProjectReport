@@ -14,6 +14,8 @@ pra
 \usepackage{subcaption}
 \usepackage[en-US]{datetime2}
 \usepackage{amsmath}
+\usepackage{tabularx}
+
 %\usepackage[none]{hyphenat}
 \hyphenpenalty=10000
 \hbadness=10000
@@ -30,7 +32,7 @@ pra
 
 \begin{document}
 
-\title{Collective Motion}
+\title{Collective Motion: An investigation into the behaviours seen in nature}
 \author{Dylan Scott}
 \affiliation{Durham University, Department of Physics}
 \DTMlangsetup{showdayofmonth=false}
@@ -80,7 +82,7 @@ I will review several models constructed from previous reports and articles, rec
 % I should also mention that any model presented in this paper is one that has been presented in a past study on collective motion
 % and then replicated and tested by myself, with no input from any of the original creators of these models.
 
-\subsection{Basics of collective motion}
+\subsection{Basics of Collective Motion}
 
 Collective motion is the name for the appearance of coherent behaviours or ordered movements from a group of individual units. 
 The underlying principle is that each body may only follow a few simple rules, but this can result in the group performing
@@ -286,6 +288,8 @@ this as a repulsive force between the chasers in order to keep them spread out:
     \mathbf{d}_{ij} &= \mathbf{x}_{c, i} - \mathbf{x}_{c, j}\,, \quad\quad d_{ij} = |\mathbf{d}_{ij}|
 \end{align}
 where \(r_{inter}\) is the characteristic length of this repulsion whilst \(C_f''\) is the coefficient of a velocity alignment term.
+\(C_{inter}\) is the interaction coefficient which determines the strength of the interaction between chasers with 
+\(C_{inter}=1\) representing a force of equivalent magnitude to the chasing force. 
 
 The final force on the i\(^{th}\) chaser is the sum of the general and chaser specific terms
 \begin{equation}
@@ -366,7 +370,7 @@ force, transformed by the \(\hat{\mathbf{W}}\) operator in Eq. 16.
     \mathbf{f}_{e, i} = \hat{\mathbf{W}}(\mathbf{v}_i^a + \mathbf{v}_{e, i}^{coll} + (\mathbf{v}_{e, i}^{esc} \textbf{ or } \mathbf{v}_{e, i}^{zigzag}))
 \end{equation}
 
-\subsection{Chase \& Escape Model Results}
+
 
 \begin{figure}[tb]
     \includegraphics[width=\threeImageSpacing]{images/chaseescape/0.png}
@@ -376,8 +380,238 @@ force, transformed by the \(\hat{\mathbf{W}}\) operator in Eq. 16.
     it before quickly catching it.}
     \label{fig:chaseescape}
 \end{figure}
+\newpage
+\begin{table}[tb]
+    \begin{center}
+    \setlength\extrarowheight{-3pt}
+    \begin{tabularx}{\textwidth}{X p{3cm} p{3cm}}
+        \hline\hline
+        Parameter description & Symbol & Value \\
+        \hline
+        Maximum Acceleration of chaser/escaper & \(a_{max}\) & 6 \\
+        Radius of circular field& \(r_a\) & 150 \\
+        Width of enclosing wall  & \(r_{wall}\) & 5 \\
+        Minimum distance for capture & \(r_{cd}\) & 1 \\
+        Friction coefficient in chasing term & \(C_f'\) & 1.1 \\
+        Friction coefficient in chaser velocity alignment & \(C_f''\) & 1.1 \\
+        Friction coefficient in escaping term & \(C_f'''\) & 1.1 \\
+        Maximum time allowed for simulation to run & \(T_{max}\) & 5000 \\
+        \hline
+        Number of chasers & \(n_c\) & 1-5 \\
+        Chaser top speed & \(v_{max, c}\) & 6 \\
+        Upper limit on chaser's prediction time frame & \(\tau_{pred}\) & 6 \\
+        Strength of interaction between chasers & \(C_{inter}\) & 0.4 \\
+        Characteristic interaction distance between chasers & \(r_{inter}\) & 100 \\
+        \hline
+        Number of escapers & \(n_e\) & 1-5 \\
+        Escaper top speed & \(v_{max, e}\) & 8 \\
+        Escaper panic threshold & \(p_{thresh}\) & 0.7 \\
+        Escaper's range of vision & \(r_{sense}\) & 150 \\
+        Minimum distance required for zigzag & \(r_{zigzag}\) & 40 \\
+        \hline        
+    \end{tabularx}
+    \caption{List of parameters for chase \& escape model, with their symbol and the values used in testing.}
+    \label{tab:ChaseEscape}
+    \end{center}
+\end{table}
+\subsection{Chase \& Escape Testing Method}
+With this model I will be investigating the time required for the chasers to fully capture the escapers. In case the
+escaper group can successfully evade the chasers indefinitely, I have a fixed limit \(T_{max}\) on the 
+time each simulation can run for. All the model parameters are displayed above in TABLE \ref{tab:ChaseEscape}.
+The parameters I chose to vary and investigate the results of are the sizes of the two groups, \(n_c\) and \(n_e\). 
+I investigated group sizes in the range of 1-5 for both chasers and escapers. 
+Future work could investigate a wider range of values for these two, or look at altering any of the other model parameters.
 
-%\blindtext[6]
+For a given set of \((n_c,n_e)\), I run the simulation and record the time \(T\) it takes to complete. I then repeat the
+simulation several more times in order to reduce the effect of random nature on the average. A higher number of runs 
+would correlate with a reduction in this random uncertainty. 
+
+
+
+
+\begin{figure}[t]
+    \includegraphics[width=0.8\linewidth]{figures/chaseescape/data.png}
+    \caption{A heatmap of the average time each simulation lasts, as a fraction of the maximum simulation time \(T_{max}\)}
+    \label{fig:chaseescapedata}
+\end{figure}
+\subsection{Chase \& Escape Model Results}
+The data I have collected is displayed above in Fig. \ref{fig:chaseescapedata} as a heatmap of the average simulation
+times. For the case of 1 chaser, it cannot catch up to any of the escapers due to its slower speed so the simulation time
+\(T\) is equivalent to the maximum time allowed \(T_{max}\). It is apparent that without cooperation from fellow chasers,
+the lone chaser would never catch anything.
+
+For the scenarios invloving 2 chasers, the results are mostly the same at face value. Two chasers are not enough to block
+every possible escape route in most situations. It is possible for an escaper to be caught however if the chasers are in
+the perfect position to pin the escaper against the wall, although the precise positions and velocities required leave the
+probability of an escaper being caught quite low. On average, only 1 escaper is caught before \(T_{max}\). Interestingly
+there was one simulation with \((n_c,n_e) = (2,4)\) where all the escapers were caught. Given that most simulations
+with \(n_c=2\) only had 1 escaper being caught, I conclude that this must be an extremely unlikely event.
+
+For \(n_c \ge 3\), the chasers could now encircle and trap their prey. Looking at the data for \(n_e=1\), increasing
+the number of chasers encircling an escaper past \(n_c=3\) does not reward much benefit in reducing the time to catch.
+I can therefore predict that there is a fixed lower bound on \(T\)  that scales proportionally with the number of escapers \(n_e\). 
+This does not take into account chasers only target the closest escaper, so there might not be 3 chasers targeting a specific escaper.
+
+For larger values of \(n_c\) and \(n_e\), the data behaves predictably. Increasing the number of escapers increases
+the simulation time, whilst increasing the number of chasers shortens it. Interestingly, these two aren't equivalent in magnitude;
+increasing both group sizes by an equivalent amount will increase the simulation time. A possible explanation is that
+it takes multiple chasers to capture an escaper, so increasing the chaser population by only 1 chaser would not be enough
+to account for an additional escaper. The exact number of additional chasers required to "match" an additional escaper
+could be a topic for future work. 
+
+\section{Predator-Prey Model}
+After I had constructed the previous model, I understood that it was effective for the simple yet complex chasing scenarios
+that predator species perform with their prey in nature. Thinking along those lines, I decided that my next step was to
+investigate a model that incorporates more aspects of nature. I also felt confident enough with my knowledge of creating models
+by this point to create my own model.
+
+This model, like the chase \& escape model by Janosov \cite{janosov2017group}, is a two species model with a "predator" group
+trying to catch their "prey". There are several differences however. Firstly, my prey species have a "nest" area that they can
+safely be without risk of being captured by the predators. This is a direct parallel to the nests and habitats some
+animals in nature posses, such as the nests of a flock of birds or a burrow for rabbits. Secondly, I have given the
+prey species an objective to collect food. They must collect a certain amount of food in order to survive or else they
+"starve". 
+
+The two species in my model therefore have conflicting objectives. The predators must hunt the prey to extinction, whilst the prey
+species must collect enough food to survive without all being caught.  
+
+
+\subsection{Predator-Prey Model Setup}
+I chose to use a 2D box setup of length \(2L\) as my environment, as it is simple to implement in practice.
+The origin is the center of the box.
+The nest for the prey is placed at a random position within the box, and \(n_{prey}\) prey with positions \(\left\{\mathbf{x}_i^{prey}\right\}_{i=1}^{n_{prey}}\)
+are placed randomly within radius \(r_{nest}\) of the nest. The \(n_{pred}\) predators start out together, 
+placed at a random point \(\mathbf{x}_j^{pred}\) within the box
+excluding the circular region representing the nest of the prey.
+
+The food is spawned in groups, with each group placed at a random point in the box not including the nest area. There are
+\(n_{\text{fg}}\) food groups and \(n_{\text{fopg}}\) food objects per group. The food objects are placed randomly within
+\(r_{food}\) of the food group center location.
+
+There is a maximum acceleration \(a_{max}\) for both species, with different top speeds \(v^{prey}\) and 
+\(v^{pred}\) respectively.
+
+\subsubsection{General rules}
+The walls of the environment are hard walls. I chose these over periodic boundaries to prevent indefinite chases.
+In order to implement these hard walls, I consider the coordinates and velocity of both the predators and prey at each timestep.
+I check the future position of a subject against the wall boundaries (\(x=\pm L,y=\pm L\)) and if it
+ were to move past a wall, I zero the velocity component responsible for crossing the bondary and rescale
+the velocity vector accordingly. This has the effect of making the subject move parallel to the wall at it's previous speed
+instead of colliding head first into it.
+
+I have also chosen to model fatigue in my predators and prey. I express this by modelling the top speed of the species
+as a variable that decays exponentially over time
+
+\begin{align}
+    v^k &= v_0^k \cdot e^{-\frac{t}{\tau_k}}, \hspace{1cm} (k= \text{pred, prey})
+\end{align}
+where \(\tau_{pred}\) and \(\tau_{prey}\) are the decay times for each sepcies respectively.
+
+\subsubsection{Predators}
+Like the previous model, a predator will hunt down its target using Eq. 9. However, in contrast to the cooperative nature
+of those chasers, the predators of this model are simpler and instead hunt seperately. In the beginning of the simulation,
+iterate over each predator and set its target to the closest prey that isn't also being targeted. When a prey is captured,
+the responsible predator will again try to target a prey not already being targeted, otherwise it just hunts the closest.
+My reason for setting the behaviour of the predator this way is because the predators have to catch all the prey before they
+collect the food and return to the safety of their nest. This strategy could be considered more efficient for quickly
+eliminating the prey species, and the predators start out faster in this model so cooperation between predators is not important
+for ensuring capture.
+\begin{table}[t]
+\begin{center}
+    \setlength\extrarowheight{-3pt}
+    \begin{tabularx}{\textwidth}{X p{3cm} p{3cm}}
+        \hline\hline
+        Parameter description & Symbol & Value \\
+        \hline
+        Half length of side of box & L & 100 \\
+        Prey spawn radius around nest & \(r_{nest}\) & 10 \\
+        Number of groups of food & \(n_{fg}\) & 3 \\
+        Number of food objects per group & \(n_{fopg}\) & 4 \\
+        \hline
+        Number of predators & \(n_{pred}\) & 1-5 \\
+        Predator initial speed & \(v_0^{pred}\) & 3-4 \\
+        Predator fatigue time & \(\tau_{pred}\) & 1500 \\
+        \hline
+        Number of prey & \(n_{prey}\) & 1-5 \\
+        Prey initial speed & \(v_0^{prey}\) & 3 \\
+        Prey fatigue time & \(\tau_{prey}\) & 2000\\
+        \hline
+    \end{tabularx}
+    \caption{The list of parameters and the values used for the predator-prey model.}
+    \label{tab:predprey}
+\end{center}
+
+\end{table}
+\subsubsection{Prey}
+Like the predators, each prey is assigned a unique food object it must aquire. It will attempt to collect the food the same
+way a predator hunts its prey
+
+\begin{align}
+    \mathbf{v}_i^{prey,food} &= v^{prey} \cdot \frac{\mathbf{x}_i^{food} - \mathbf{x}_i^{prey}}{|\mathbf{x}_i^{food} - \mathbf{x}_i^{prey}|}
+\end{align}
+where \(\mathbf{x}_i^{food}\) is the position of the food being targeted by the i\(^{th}\) prey.
+
+Prey also fear and attempt to move away from predators the same way escapers from the previous model flee from catchers, using
+Eq. 14. 
+
+
+
+\subsection{Predator-Prey Model Testing}
+With this model I will investigating the two possibles outcomes, prey victory or predator, and the effect the initial
+set of parameters have on the outcome. The parameters I will be varying are \(n_{prey}\), \(n_{pred}\), 
+and \(v_0^{pred}\). I am investigating the effects of population variation, as well as how the speed of the predator 
+affects the outcome.
+
+
+
+
+
+
+
+\subsection{Predator-Prey Model Results}
+
+
+
+
+\begin{figure}[htbp]
+    \includegraphics[width=0.87\linewidth]{figures/predatorprey/ExtinctionTime.png}
+    \includegraphics[width=0.8\linewidth]{figures/predatorprey/SpeedExtinction.png}
+    \caption{(a) A heatmap of the extinction time for the prey species with variation of both species initial
+    population number. For coordinates (5, 1) the prey were always able to collect all the food and hence no data.
+    (b) A data plot of the total simulation time when the predators' speed was varied. Green signifies all food was collected
+    first while red indicates the prey were all caught.}
+    \label{fig:numberpredprey}
+\end{figure}
+
+The results can be seen below in Fig. \ref{fig:numberpredprey}. For the first set of experiments, I set \(v_0^{pred}=3.5\).
+At this speed, the predators were almost always catching the prey, so I measured how long it took for the prey to be captured.
+The heatmap in Fig. \ref{fig:numberpredprey}(a) shows the intuitive understanding that increasing the number predators reduces
+this "extinction time" whilst increasing the number of prey raises it. Increasing both populations simultaneously decreases
+the extinction time, implying that the predators have an advantage over prey. This only seems to occur for low predator 
+numbers with higher number of prey. A possible reason is that going from 1 to 2 predators is a bigger impact than going from
+3 to 4 chasers. The number of hunters has doubled while the number of prey has has increase less so, relatively. 
+Infact, for \(n_{pred} > n_{prey}\) the extinction time increases, which goes with my hypothesis.
+
+For the second set of experiments I set \(n_{prey}=5, n_{pred} = 3\) and then varied the speed of the predators. The results
+can be seen in Fig. \ref{fig:numberpredprey}(b). Starting with the ratio \(v_0^{pred}/v_0^{prey}=1\), I increased the 
+predators' speed in small increments and measured the outcome and total time for the simulation. Initially,
+the predators and prey were the same speed so the predators could never catch the prey. As the speed was increased, the
+average simulation time for the prey victory outcome increased. At a ratio of 1.062, predators started winning occaisionally and
+their probability of success increased with speed. Around 1.075 theres a 50/50 chance of either side's win condition occuring.
+As predator speed is further increased, probability of predator success increases, with the simulation time for such
+outcomes decreasing as well. From the data on the graph I can make several extrapolations. If the predator speed was increased
+further onwards, the simulation time would trend down towards zero (the predators are immensely fast and catch the prey almost instantly).
+If instead the speed was decreased such that the ratio approached zero, the average simulation time would most likely tend
+to the same value as if there was no predators.
+
+How the other parameters affect these data sets would also be interesting to investigate and may be the focus of future studies.
+
+
+\section{Conclusion}
+In conclusion, I have investigated several models in the realm of collective motion and have found interesting data in all of them.
+I have highlighted above different ways that I could further study these models, including tweaking more system 
+parameters and investigating a broader range for parameters already tested.
+
 
 \bibliography{references}
 \newpage\newpage
